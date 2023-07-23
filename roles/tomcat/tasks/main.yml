@@ -58,7 +58,7 @@
         name: tomcat
         state: started
         enabled: true
- rescue:
+  rescue:
     - name: Eliminar usuario
       ansible.builtin.user:
         name: "{{ usuario }}"
