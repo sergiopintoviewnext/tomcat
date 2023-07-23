@@ -1,0 +1,41 @@
+---
+
+- name: Prepare
+  hosts: all
+  gather_facts: true
+  vars:
+    url_repo: '{% if ansible_distribution_major_version == "8"%}mirror.centos.org/centos{% else %}mirror.stream.centos.org{% endif %}'
+  tasks:
+      - name: Preparando contenedores ubi
+        when: ansible_os_family == "RedHat"      
+        block:
+        - name: Añadir repo BaseOS
+          ansible.builtin.yum_repository:
+            name: Centos_BaseOS
+            description: Centos BaseOS
+            baseurl: http://{{ url_repo }}/{{ ansible_distribution_major_version }}-stream/BaseOS/{{ ansible_architecture }}/os/
+            gpgcheck: no
+
+        - name: Añadir repo AppStream
+          ansible.builtin.yum_repository:
+            name: Centos_AppStream
+            description: Centos AppStream
+            baseurl: http://{{ url_repo }}/{{ ansible_distribution_major_version }}-stream/AppStream/{{ ansible_architecture }}/os/
+            gpgcheck: no            
+
+        - name: Instalar firewalld
+          ansible.builtin.yum:
+            name: "{{ item }}"
+            state: present
+            update_cache: true
+          with_items:
+            - firewalld
+            - python3-firewall
+
+        - name: Habilitar servicio firewalld
+          ansible.builtin.service:
+            name: firewalld
+            state: started
+            enabled: true
+
+...

@@ -1,0 +1,5 @@
+---
+
+java: '{% if ansible_os_family == "RedHat" %}java-11-openjdk{% else %}openjdk-11-jre{% endif %}'
+
+...
