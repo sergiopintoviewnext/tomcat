@@ -58,28 +58,19 @@
         name: tomcat
         state: started
         enabled: true
+ rescue:
+    - name: Eliminar usuario
+      ansible.builtin.user:
+        name: "{{ usuario }}"
+        state: absent
 
 
-    # - name: Habilitar puerto firewall
-    #   ansible.posix.firewalld:
-    #     port: 8080/tcp
-    #     state: enabled
-    #     permanent: true
-    #     immediate: true
-    #   when: ansible_os_family == "RedHat"
-#  rescue:
-    # - name: Eliminar usuario
-    #   ansible.builtin.user:
-    #     name: "{{ usuario }}"
-    #     state: absent
-
-
-    # - name: Eliminar carpetas y ficheros
-    #   ansible.builtin.file:
-    #     path: "{{ path }}"
-    #     state: absent
-    #   loop:
-    #     - "{{ path }}"
-    #     - /etc/systemd/system/tomcat.service
+    - name: Eliminar carpetas y ficheros
+      ansible.builtin.file:
+        path: "{{ path }}"
+        state: absent
+      loop:
+        - "{{ path }}"
+        - /etc/systemd/system/tomcat.service
 
 ...
