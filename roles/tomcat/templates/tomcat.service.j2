@@ -1,0 +1,27 @@
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
+
+[Service]
+Type=forking
+
+Environment="JAVA_HOME={{ java_home }}"
+Environment="JAVA_OPTS=-Djava.awt.headless=true"
+
+
+Environment="CATALINA_BASE={{ path }}/apache-tomcat-{{ specific_version }}"
+Environment="CATALINA_HOME={{ path }}/apache-tomcat-{{ specific_version }}"
+Environment="CATALINA_PID={{ path }}/apache-tomcat-{{ specific_version }}/temp/tomcat.pid"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+
+
+ExecStart={{ path }}/apache-tomcat-{{ specific_version }}/bin/startup.sh
+ExecStop={{ path }}/apache-tomcat-{{ specific_version }}/bin/shutdown.sh
+
+User={{ usuario }}
+Group={{ usuario }}
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

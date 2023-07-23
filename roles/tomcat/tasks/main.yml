@@ -1,0 +1,70 @@
+---
+
+- name: Crear usuario
+  ansible.builtin.user:
+    name: "{{ usuario }}"
+
+
+- name: Crear carpeta para binario
+  ansible.builtin.file:
+    path: "{{ path }}"
+    state: directory
+    owner: "{{ usuario }}"
+    group: "{{ usuario }}"
+    mode: '0755'
+
+
+- name: Descargar binario 
+  ansible.builtin.uri:
+    url: https://downloads.apache.org/tomcat/tomcat-{{ major_version }}/v{{ specific_version }}/bin/apache-tomcat-{{ specific_version }}.tar.gz
+    dest: "{{ path }}"
+
+
+- name: Descomprimir binario
+  ansible.builtin.unarchive:
+    src: "{{ path }}/apache-tomcat-{{ specific_version }}.tar.gz"
+    dest: "{{ path }}"
+    owner: "{{ usuario }}"
+    group: "{{ usuario }}"
+    mode: '0755'
+    remote_src: true
+
+
+- name: Eliminar binario comprimido
+  ansible.builtin.file:
+    path: "{{ path }}/apache-tomcat-{{ specific_version }}.tar.gz"
+    state: absent
+
+
+- name: Copiar fichero servicio
+  ansible.builtin.template:
+    src: tomcat.service.j2
+    dest: /etc/systemd/system/tomcat.service
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Reiniciar servicio
+
+
+- name: Reiniciar daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+
+- name: Iniciar servicio
+  ansible.builtin.service:
+    name: tomcat
+    state: started
+    enabled: true
+
+
+- name: Habilitar puerto firewall
+  ansible.posix.firewalld:
+    port: 8080/tcp
+    state: enabled
+    permanent: true
+    immediate: true
+  when: ansible_os_family == "RedHat"
+
+
+...

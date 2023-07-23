@@ -1,0 +1,12 @@
+---
+
+usuario: tomcat
+path: /opt/tomcat
+
+major_version: 9
+specific_version: 9.0.78
+
+
+java_home: '{% if ansible_os_family == "RedHat" %}/usr/lib/jvm/jre{% elif ansible_os_family == "Debian" %}/usr/lib/jvm/java-11-openjdk-amd64/{% endif %}'
+
+...
