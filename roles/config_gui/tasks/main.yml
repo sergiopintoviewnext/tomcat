@@ -1,0 +1,29 @@
+---
+
+- name: Incluir variables cifradas con vault
+  ansible.builtin.include_vars:
+    file: vault.yml
+
+
+- name: Eliminar restrinccion conexiones IP con nuevo fichero context.xml
+  ansible.builtin.copy:
+    src: context.xml
+    dest: "{{ item }}"
+    owner: "{{ usuario }}"
+    group: "{{ usuario }}"
+    mode: '0755'
+  loop:
+    - "{{ path }}/apache-tomcat-{{ version }}/webapps/manager/META-INF/context.xml"
+    - "{{ path }}/apache-tomcat-{{ version }}/webapps/host-manager/META-INF/context.xml"    
+
+  
+- name: Añadir usuario
+  ansible.builtin.lineinfile:
+    path: "{{ path }}//apache-tomcat-{{ version }}/conf/tomcat-users.xml"
+    insertbefore: ^</tomcat-users>
+    line: '{{ item }}'
+  loop:
+    - <user username="{{ user }}" password="{{ password }}" roles="manager-gui,admin-gui"/>
+  notify: Reiniciar servicio
+
+...

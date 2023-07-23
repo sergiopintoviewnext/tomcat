@@ -1,0 +1,9 @@
+---
+
+path: /opt/tomcat
+
+version: 9.0.78
+
+usuario: tomcat
+
+...
