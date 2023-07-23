@@ -23,19 +23,4 @@
             baseurl: http://{{ url_repo }}/{{ ansible_distribution_major_version }}-stream/AppStream/{{ ansible_architecture }}/os/
             gpgcheck: no            
 
-        - name: Instalar firewalld
-          ansible.builtin.yum:
-            name: "{{ item }}"
-            state: present
-            update_cache: true
-          with_items:
-            - firewalld
-            - python3-firewall
-
-        - name: Habilitar servicio firewalld
-          ansible.builtin.service:
-            name: firewalld
-            state: started
-            enabled: true
-
 ...
