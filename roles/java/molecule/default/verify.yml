@@ -3,8 +3,16 @@
 
 - name: Verify
   hosts: all
-  gather_facts: false
+  gather_facts: true
   tasks:
-  - name: Example assertion
-    ansible.builtin.assert:
-      that: true
+    - name: Comprobar instalacion java
+      ansible.builtin.command:
+        cmd: java -version
+      register: comando    
+
+
+    - name: Verificar instalacion java
+      ansible.builtin.assert:
+        that: comando.rc == 0
+        success_msg: "Java instalado"
+        fail_msg: "Java NO instalado"

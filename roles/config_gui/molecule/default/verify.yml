@@ -3,8 +3,22 @@
 
 - name: Verify
   hosts: all
-  gather_facts: false
+  gather_facts: true
+  vars:
+    servicio: tomcat
+    puerto: 8080
+  vars_files:
+    - vault.yml
   tasks:
-  - name: Example assertion
-    ansible.builtin.assert:
-      that: true
+    - name: Comprobar conexion a pagina
+      ansible.builtin.uri:
+        url: http://localhost:{{ puerto }}/manager/status
+        user: "{{ user }}"
+        password: "{{ password }}"
+      register: pagina
+
+    - name: Comprobar codigo http
+      ansible.builtin.assert:
+        that: pagina.status == 200
+        success_msg: "Conexion a pagina {{ servicio }} OK"
+        fail_msg: "Error en conexion a pagina {{ servicio }}"

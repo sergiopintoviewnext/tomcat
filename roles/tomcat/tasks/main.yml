@@ -20,6 +20,7 @@
       ansible.builtin.uri:
         url: https://downloads.apache.org/tomcat/tomcat-{{ major_version }}/v{{ specific_version }}/bin/apache-tomcat-{{ specific_version }}.tar.gz
         dest: "{{ path }}"
+      changed_when: false
 
 
     - name: Descomprimir binario
@@ -36,6 +37,7 @@
       ansible.builtin.file:
         path: "{{ path }}/apache-tomcat-{{ specific_version }}.tar.gz"
         state: absent
+      changed_when: false
 
 
     - name: Copiar fichero servicio

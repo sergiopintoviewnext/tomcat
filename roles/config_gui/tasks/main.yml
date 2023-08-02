@@ -21,9 +21,7 @@
   ansible.builtin.lineinfile:
     path: "{{ path }}//apache-tomcat-{{ version }}/conf/tomcat-users.xml"
     insertbefore: ^</tomcat-users>
-    line: '{{ item }}'
-  loop:
-    - <user username="{{ user }}" password="{{ password }}" roles="manager-gui,admin-gui"/>
+    line: <user username="{{ user }}" password="{{ password }}" roles="manager-gui,admin-gui"/>
   notify: Reiniciar servicio
 
 ...
